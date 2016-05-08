@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="30" status="WARN">
+    <Properties>
+        <Property name="file_pattern">%d{yyyy-MM-dd.HH}-%i.log</Property>
+        <Property name="layout_pattern">
+            %d{ISO8601} %-5p [%t] [${app}] trace_id:$${ctx:trace_id} %-50.50c (%F:%L) - %m%n
+        </Property>
+        <Property name="folder">logs/spring-web-log
+        </Property>
+        <Property name="app">app-name</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- root -->
+        <RollingFile name="rootAppender" fileName="${folder}/${app}.log"
+                     filePattern="${folder}/${app}.log.${file_pattern}">
+            <PatternLayout>
+                <pattern>${layout_pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true"/>
+                <SizeBasedTriggeringPolicy size="512 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="200"/>
+        </RollingFile>
+
+        <!-- error -->
+        <RollingFile name="errorAppender" fileName="${folder}/${app}_error.log"
+                     filePattern="${folder}/${app}_error.log.${file_pattern}">
+            <PatternLayout>
+                <pattern>${layout_pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="512 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <!-- fatal -->
+        <RollingFile name="fatalAppender" fileName="${folder}/${app}_fatal.log"
+                     filePattern="${folder}/${app}_fatal.log.${file_pattern}">
+            <PatternLayout>
+                <pattern>${layout_pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="512 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <!-- auditTrail -->
+        <RollingFile name="auditTrailAppender" fileName="${folder}/audit_trail_${app}.log"
+                     filePattern="${folder}/audit_trail_${app}.log.${file_pattern}">
+            <PatternLayout>
+                <pattern>${layout_pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="24"
+                                           modulate="true"/>
+                <SizeBasedTriggeringPolicy size="512 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <!-- userTime -->
+        <RollingFile name="timeTrailAppender" fileName="${folder}/time_trail_${app}.log"
+                     filePattern="${folder}/time_trail_${app}.log.${file_pattern}">
+            <PatternLayout>
+                <pattern>${layout_pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="24"
+                                           modulate="true"/>
+                <SizeBasedTriggeringPolicy size="512 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <!-- http request -->
+        <RollingFile name="httpAppender" fileName="${folder}/http_${app}.log"
+                     filePattern="${folder}/http_${app}.log.${file_pattern}">
+            <PatternLayout>
+                <pattern>${layout_pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="512 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <!-- mq -->
+        <RollingFile name="mqAppender" fileName="${folder}/mq_${app}.log"
+                     filePattern="${folder}/mq_${app}.log.${file_pattern}">
+            <PatternLayout>
+                <pattern>${layout_pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="512 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <!-- sql log -->
+        <RollingFile name="sqlAppender" fileName="${folder}/sql_${app}.log"
+                     filePattern="${folder}/sql.log_${app}.${file_pattern}">
+            <PatternLayout>
+                <pattern>${layout_pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="512 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info" includeLocation="true">
+            <AppenderRef ref="rootAppender"/>
+            <AppenderRef ref="errorAppender" level="error"/>
+        </Root>
+
+        <!-- fatal log -->
+        <Logger name="com.zmannotes.spring.web.fatal" level="info" additivity="true"
+                includeLocation="true">
+            <AppenderRef ref="fatalAppender"/>
+        </Logger>
+
+        <!-- auditTrail -->
+        <Logger name="com.zmannotes.spring.web.interceptor.AuditTrailInterceptor" level="info"
+                additivity="true" includeLocation="true">
+            <AppenderRef ref="auditTrailAppender"/>
+        </Logger>
+
+        <!-- userTime -->
+        <Logger name="com.zmannotes.spring.web.interceptor.TimeTrailInterceptor" level="info"
+                additivity="true" includeLocation="true">
+            <AppenderRef ref="timeTrailAppender"/>
+        </Logger>
+
+        <!-- http -->
+        <Logger name="com.zmannotes.spring.payment.external.api" level="info" additivity="true"
+                includeLocation="true">
+            <AppenderRef ref="httpAppender"/>
+        </Logger>
+
+        <!-- sql -->
+        <Logger name="com.zmannotes.spring.web.common.mybatis" level="info"
+                additivity="true" includeLocation="true">
+            <AppenderRef ref="sqlAppender"/>
+        </Logger>
+
+        <!-- mq -->
+        <Logger name="com.zmannotes.spring.web.mq" level="info"
+                additivity="true" includeLocation="true">
+            <AppenderRef ref="mqAppender"/>
+        </Logger>
+
+    </Loggers>
+</Configuration>
+

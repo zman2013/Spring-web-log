@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- 扫描指定package下的Controller类 -->
+	<context:component-scan base-package="com.zmannotes.spring.web.controller" />
+	
+	<!-- 激活spring mvc功能 -->
+	<mvc:annotation-driven/>
+
+	<mvc:interceptors>
+        <bean class="com.zmannotes.spring.web.interceptor.GeneralParamInterceptor"/>
+        <bean class="com.zmannotes.spring.web.interceptor.AuditTrailInterceptor"/>
+        <bean class="com.zmannotes.spring.web.interceptor.TimeTrailInterceptor"/>
+    </mvc:interceptors>
+
+    <!-- 指定web页面根路径和拓展名 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/view/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+
+</beans>
